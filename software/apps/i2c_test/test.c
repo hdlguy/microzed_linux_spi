@@ -43,19 +43,31 @@ int main(int argc,char** argv)
 
     buf[0] = 0x00; // register address for temperature sensor
     write(file, buf, 1);
-    usleep(100000);
+    usleep(100000); // needs delay
     read(file, buf, 2);
     regval = ((buf[0] << 8) + buf[1]);
     floatval = 165.0*regval/pow(2.0,16.0) - 40.0;
-    printf("regval = 0x%08x, temperature = %lf\n", regval, floatval);
+    printf("regval = 0x%04x, temperature = %lf\n", regval, floatval);
 
     buf[0] = 0x01; // register address for humidity sensor
     write(file, buf, 1);
-    usleep(100000);
+    usleep(100000); // needs delay
     read(file, buf, 2);
     regval = ((buf[0] << 8) + buf[1]);
     floatval = 100.0*regval/pow(2.0,16.0);
-    printf("regval = 0x%08x, relative humidity = %lf\n", regval, floatval);
+    printf("regval = 0x%04x, relative humidity = %lf\n", regval, floatval);
+
+    buf[0] = 0xfe; // register address for manufacturer ID
+    write(file, buf, 1);
+    read(file, buf, 2);
+    regval = ((buf[0] << 8) + buf[1]);
+    printf("manufacturer id = 0x%04x\n", regval);
+
+    buf[0] = 0xff; // register address for device ID
+    write(file, buf, 1);
+    read(file, buf, 2);
+    regval = ((buf[0] << 8) + buf[1]);
+    printf("device id = 0x%04x\n", regval);
 
     return 0;
 }
